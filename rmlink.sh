@@ -2,6 +2,8 @@
 
 source is_windows.sh
 
+# Source: sputnick @ http://stackoverflow.com/a/10823650
+
 # Remove a link, cross-platform.
 rmlink() {
     if is_windows; then
