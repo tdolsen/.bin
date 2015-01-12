@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source is_windows.sh
+source is_windows
 
 # Source: sputnick @ http://stackoverflow.com/a/10823650
 
