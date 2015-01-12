@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+for dir in `ls`; do
+    cd "$dir";
+    if git status 2> /dev/null | grep "ahead" 1> /dev/null; then
+        echo;
+        echo $dir;
+        git status 2> /dev/null | grep "ahead";
+    fi
+    cd ..;
+done

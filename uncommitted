@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+for dir in `ls`; do
+    cd "$dir";
+    if ! git status 2> /dev/null | grep "nothing to commit" 1> /dev/null; then
+        if git status -s 2> /dev/null 1> /dev/null; then
+            echo;
+            echo $dir;
+            git status -s;
+        fi
+    fi
+    cd ..;
+done
