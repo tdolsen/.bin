@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+VERSION="0.1"
+PROGRAM=`basename $0`
+AUTHORS=("Torkild Dyvik Olsen")
+
+function join { local IFS="$1"; shift; echo "$*"; }
+
+# usage information and versioning
+usage() {
+	echo "usage: $PROGRAM [--no-git] TARGET"
+	echo "List Git information about TARGET and it's child directories."
+	echo
+	echo " --no-git	 display non-git repositories in the list"
+	echo " --help    displays this help and exits"
+	echo " --version output version information and exits"
+	exit 1
+}
+
+version() {
+	echo "$PROGRAM (gitutil) $VERSION"
+	echo "Written by $(IFS=' ';echo "${AUTHORS[*]}";IFS=$' \t\n')"
+	echo
+	echo "Copyright (C) 2015 Public domain"
+	exit 1
+}
+
+# parse options
+TEMP=$(getopt -o --long no-git,help,version -n '$PROGRAM' -- "$@")
+eval set -- "$TEMP"
+
+# set options to variables
+while true; do
+	case "$1" in
+		--no-git|--non-git) NO_GIT=true; shift;; # TODO: Actually add support for no git
+		--version) 			version; shift;;
+		--help) 			usage; shift;;
+		--) 				shift; break;;
+		*)					echo "$1"; break;;
+	esac
+	shift 2
+done
+
+echo "$#"
+echo "$@"
+echo "$1"
+echo "$2"
+
+if [ $# -eq 0 ]; then
+	tar = "$PWD"
+elif [ $# -gt 1 ]; then
+	tar = "/var/null" #TODO: Make the program accept mulgiple directories to check
+else
+	tar = "asd"
+fi;
+
+exit
+
+for dir in `ls`; do
+	cd "$dir";
+	if ! git status 2>&1 | grep "^fatal: Not a git repository" > /dev/null; then
+		echo;
+		echo $dir;
+		git status
+	else
+		echo
+	fi
+#	if ! git status 2> /dev/null | grep "nothing to commit" 1> /dev/null; then
+#		if git status -s 2> /dev/null 1> /dev/null; then
+#			echo;
+#			echo $dir;
+#			git status -sb;
+#		fi
+#	fi
+	cd ..;
+done
