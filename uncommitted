@@ -6,7 +6,7 @@ for dir in `ls`; do
         if git status -s 2> /dev/null 1> /dev/null; then
             echo;
             echo $dir;
-            git status -s;
+            git status -sb;
         fi
     fi
     cd ..;
