@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-source is_windows
+source iswindows
 
 # Source: sputnick @ http://stackoverflow.com/a/10823650
 
 # Remove a link, cross-platform.
 rmlink() {
-    if is_windows; then
+    if iswindows; then
         # Again, Windows needs to be told if it's a file or directory.
         if [[ -d "$1" ]]; then
             rmdir "$1";
