@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source is_windows
+source is_windows.sh
 
 # Remove a link, cross-platform.
 rmlink() {
