@@ -4,8 +4,6 @@ VERSION="0.1"
 PROGRAM=`basename $0`
 AUTHORS=("Torkild Dyvik Olsen")
 
-function join { local IFS="$1"; shift; echo "$*"; }
-
 # usage information and versioning
 usage() {
 	echo "usage: $PROGRAM [--no-git] TARGET"
@@ -28,49 +26,46 @@ version() {
 # parse options
 TEMP=$(getopt -o --long no-git,help,version -n '$PROGRAM' -- "$@")
 eval set -- "$TEMP"
+shift 3
 
 # set options to variables
 while true; do
 	case "$1" in
-		--no-git|--non-git) NO_GIT=true; shift;; # TODO: Actually add support for no git
-		--version) 			version; shift;;
-		--help) 			usage; shift;;
+		--version) 			version; shift; break;;
+		--help) 			usage; shift; break;;
+		--no-git|--non-git) NO_GIT=true; shift; break;; # TODO: Actually add support for no git
 		--) 				shift; break;;
-		*)					echo "$1"; break;;
+		*) 					break;;
 	esac
-	shift 2
 done
 
-echo "$#"
-echo "$@"
-echo "$1"
-echo "$2"
+check_dir() {
+	cd "$1";
+	if ! git status 2>&1 | grep "^fatal: Not a git repository" > /dev/null; then
+		printf "%s is a Git repository.\n" $1
+	else
+		printf "%s is not.\n" $1
+	fi
+	#	if ! git status 2> /dev/null | grep "nothing to commit" 1> /dev/null; then
+	#		if git status -s 2> /dev/null 1> /dev/null; then
+	#			echo;
+	#			echo $dir;
+	#			git status -sb;
+	#		fi
+	#	fi
+}
+
+iterate_dir() {
+	cd "$1"
+	for dir in `ls`; do
+		check_dir $dir
+	done
+}
 
 if [ $# -eq 0 ]; then
-	tar = "$PWD"
+	iterate_dir "$PWD"
 elif [ $# -gt 1 ]; then
-	tar = "/var/null" #TODO: Make the program accept mulgiple directories to check
+	tar="/var/null" #TODO: Make the program accept mulgiple directories to check
 else
-	tar = "asd"
+	check_dir "$1"
 fi;
-
-exit
-
-for dir in `ls`; do
-	cd "$dir";
-	if ! git status 2>&1 | grep "^fatal: Not a git repository" > /dev/null; then
-		echo;
-		echo $dir;
-		git status
-	else
-		echo
-	fi
-#	if ! git status 2> /dev/null | grep "nothing to commit" 1> /dev/null; then
-#		if git status -s 2> /dev/null 1> /dev/null; then
-#			echo;
-#			echo $dir;
-#			git status -sb;
-#		fi
-#	fi
-	cd ..;
-done
